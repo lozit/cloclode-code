@@ -2,9 +2,13 @@
 
 ![Cloclo dans la status line de Claude Code, à côté d'une phrase et des informations de session](cloclode_code.png)
 
-Cloclo en pixel art dans la status line de Claude Code. Il se dandine quand Claude
-travaille, bronze quand la fenêtre de contexte se remplit, et sort une phrase par tour
-de conversation.
+Claude Code a une mascotte. Elle est sympathique, discrète, vaguement crustacée. Elle ne
+chante pas.
+
+Cloclode Code corrige cette lacune. Votre status line devient un podium : Cloclo s'y
+dandine à chaque outil lancé, place une réplique par tour de conversation, et bronze à
+mesure que la fenêtre de contexte se remplit. À 100 %, il est cuit — mais il aura tenu
+jusqu'au bout.
 
 ## Installation
 
@@ -57,7 +61,7 @@ et le col gardent leur couleur — c'est un bronzage, pas un incendie.
 - `scripts/statusline.mjs` — lit cet état et rend la ligne (aucune dépendance, ~40 ms)
 - `scripts/sprite.mjs` — la mascotte, en demi-blocs Unicode et couleurs 24 bits ; un seul
   sprite, dont seule la rangée d'épaules varie
-- `scripts/phrases.mjs` — le catalogue des titres
+- `scripts/phrases.mjs` — le catalogue des répliques
 - `scripts/demo.mjs` — rend la ligne hors session, pour voir un changement tout de suite
 
 L'état stocke aussi un compteur `tick`, incrémenté à chaque événement. C'est lui qui fait
@@ -67,7 +71,7 @@ L'état est stocké dans `$CLAUDE_PLUGIN_DATA` s'il existe, sinon dans le dossie
 du système. Comme la status line est événementielle, un état peut rester affiché
 brièvement après coup — c'est un compagnon, pas un moniteur.
 
-## Ajouter des titres
+## Ajouter des répliques
 
 Tout est dans `scripts/phrases.mjs` : un tableau `PHRASES`, sans rattachement à un état.
 Elles défilent dans l'ordre, une par tour.
