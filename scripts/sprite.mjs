@@ -23,13 +23,16 @@ const CLOCLO = [
 ];
 
 // A backing dancer: half the width, no eyes. At four columns a face would be
-// two pixels wide, so detail reads as noise - the silhouette carries it.
+// two pixels wide, so detail reads as noise - the silhouette carries it. The
+// face is kept two pixels square, and the shoulder row below it is dress, not
+// skin: skin there would read as a continuation of the face and stretch the
+// head back into a column. The hair falls past it on both sides.
 const CLAUDETTE = [
   '.DD.',
   'DDDD',
   'DSSD',
-  '.SS.',
-  '.SS.',
+  'DSSD',
+  '.RR.',
   'RRRR',
 ];
 
@@ -38,7 +41,7 @@ const CLAUDETTE = [
 // above that line - the inner ones carry the jaw - so the raised side shows as
 // a full cell next to the lowered side's half cell.
 const CLOCLO_SWAY = ['JSSSSSS.', '.SSSSSSJ'];
-const CLAUDETTE_SWAY = ['RSS.', '.SSR'];
+const CLAUDETTE_SWAY = ['RRR.', '.RRR'];
 
 function lerp(from, to, t) {
   return from.map((c, i) => Math.round(c + (to[i] - c) * t));
