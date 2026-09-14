@@ -1,14 +1,10 @@
 # Cloclode Code
 
+![Cloclo dans la status line de Claude Code, à côté d'une phrase et des informations de session](cloclode_code.png)
+
 Cloclo en pixel art dans la status line de Claude Code. Il se dandine quand Claude
 travaille, bronze quand la fenêtre de contexte se remplit, et sort une phrase par tour
 de conversation.
-
-```
-▄▀▀▀▀▀▀▄   ♪ Eh toi là-bas avec le calamar sur la tête !
-▀████▀██   opus · mon-projet · 34%
-▄▀▀▀▀▀▀▄
-```
 
 ## Installation
 
