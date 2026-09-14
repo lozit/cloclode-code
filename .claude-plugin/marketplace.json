@@ -1,0 +1,14 @@
+{
+  "name": "cloclode",
+  "owner": {
+    "name": "Guillaume Ferrari",
+    "email": "guillaume.ferrari@protonmail.com"
+  },
+  "plugins": [
+    {
+      "name": "cloclode-code",
+      "source": "./",
+      "description": "Cloclo en pixel art dans votre status line, avec une phrase par tour de conversation."
+    }
+  ]
+}

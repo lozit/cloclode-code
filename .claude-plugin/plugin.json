@@ -1,0 +1,11 @@
+{
+  "name": "cloclode-code",
+  "version": "0.1.0",
+  "description": "Cloclo en pixel art dans la status line de Claude Code : il se dandine quand Claude travaille et bronze quand la fenêtre de contexte se remplit.",
+  "author": {
+    "name": "Guillaume Ferrari",
+    "email": "guillaume.ferrari@protonmail.com"
+  },
+  "keywords": ["statusline", "mascot", "pixel-art", "fun"],
+  "license": "MIT"
+}
