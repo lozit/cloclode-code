@@ -10,6 +10,12 @@ dandine à chaque outil lancé, place une réplique par tour de conversation, et
 mesure que la fenêtre de contexte se remplit. À 100 %, il est cuit — mais il aura tenu
 jusqu'au bout.
 
+Quand des sous-agents tournent, Cloclo n'est plus seul : une Claudette apparaît derrière
+lui par sous-agent actif, et disparaît quand il a fini. Le compteur au bout de la ligne du
+bas annonce la troupe.
+
+![Cloclo accompagné de deux Claudettes, avec le compte affiché en fin de ligne](claudettes.png)
+
 ## Installation
 
 ```
