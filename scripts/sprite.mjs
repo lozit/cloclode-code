@@ -5,13 +5,15 @@ const PALETTE = {
   E: [26, 19, 16],
   W: [242, 239, 234],
   J: [52, 58, 84],
+  D: [74, 48, 44],
+  R: [176, 58, 84],
   '.': null,
 };
 
 // Rows 2 and 3 share one terminal line, row 2 landing on its top half. The face
 // never changes: the only thing that moves is the shoulder line, so the sprite
 // is a single grid rather than a set of expressions.
-const SPRITE = [
+const CLOCLO = [
   '.HHHHHH.',
   'HhhHHHHH',
   'HSESSESH',
@@ -19,6 +21,24 @@ const SPRITE = [
   '.SSSSSS.',
   'JJWWWWJJ',
 ];
+
+// A backing dancer: half the width, no eyes. At four columns a face would be
+// two pixels wide, so detail reads as noise - the silhouette carries it.
+const CLAUDETTE = [
+  '.DD.',
+  'DDDD',
+  'DSSD',
+  '.SS.',
+  '.SS.',
+  'RRRR',
+];
+
+// The sway: one shoulder lifts a pixel above the shoulder line while the other
+// stays down, and they trade on the next event. Only the outer columns are free
+// above that line - the inner ones carry the jaw - so the raised side shows as
+// a full cell next to the lowered side's half cell.
+const CLOCLO_SWAY = ['JSSSSSS.', '.SSSSSSJ'];
+const CLAUDETTE_SWAY = ['RSS.', '.SSR'];
 
 function lerp(from, to, t) {
   return from.map((c, i) => Math.round(c + (to[i] - c) * t));
@@ -53,19 +73,13 @@ function bg([r, g, b]) {
 
 const RESET = '\u001b[0m';
 
-// The sway: one shoulder lifts a pixel above the shoulder line while the other
-// stays down, and they trade on the next event. Columns 0 and 7 are the only
-// ones free above that line - 1 to 6 carry the jaw - so the raised side shows
-// as a full cell next to the lowered side's half cell.
-const SWAY = ['JSSSSSS.', '.SSSSSSJ'];
-
-export function renderSprite({ heat = 0, color = true, tick = null } = {}) {
-  const shoulders = SPRITE.length - 2;
+function render(grid, sway, { heat, color, tick }) {
+  const shoulders = grid.length - 2;
   const rows =
     tick === null
-      ? SPRITE
-      : SPRITE.map((row, i) =>
-          i === shoulders ? SWAY[Math.abs(tick) % SWAY.length] : row,
+      ? grid
+      : grid.map((row, i) =>
+          i === shoulders ? sway[Math.abs(tick) % sway.length] : row,
         );
   const lines = [];
 
@@ -79,22 +93,35 @@ export function renderSprite({ heat = 0, color = true, tick = null } = {}) {
       const b = tint(bottom[x], heat);
 
       if (!color) {
-        line += t || b ? '\u2588' : ' ';
+        line += t || b ? '█' : ' ';
         continue;
       }
       if (!t && !b) line += ' ';
-      else if (t && !b) line += `${fg(t)}\u2580${RESET}`;
-      else if (!t && b) line += `${fg(b)}\u2584${RESET}`;
-      else line += `${fg(t)}${bg(b)}\u2580${RESET}`;
+      else if (t && !b) line += `${fg(t)}▀${RESET}`;
+      else if (!t && b) line += `${fg(b)}▄${RESET}`;
+      else line += `${fg(t)}${bg(b)}▀${RESET}`;
     }
     // Claude Code strips leading whitespace from every status line row, which
     // would shift a row whose first pixel is transparent one column left. An
-    // escape sequence in front keeps the row anchored; the frames avoid the
-    // case anyway, this only guards frames added later.
+    // escape sequence in front keeps the row anchored; the grids avoid the case
+    // anyway, this only guards grids added later.
     if (color && line.startsWith(' ')) line = RESET + line;
     lines.push(line);
   }
   return lines;
 }
 
+export function renderSprite({ heat = 0, color = true, tick = null } = {}) {
+  return render(CLOCLO, CLOCLO_SWAY, { heat, color, tick });
+}
+
+// Offset by one so the troupe sways against the star: when Cloclo lifts his
+// left shoulder, the Claudettes lift their right. Two independent animations
+// become one choreography.
+export function renderClaudette({ heat = 0, color = true, tick = null } = {}) {
+  const counter = tick === null ? null : tick + 1;
+  return render(CLAUDETTE, CLAUDETTE_SWAY, { heat, color, tick: counter });
+}
+
 export const SPRITE_WIDTH = 8;
+export const CLAUDETTE_WIDTH = 4;

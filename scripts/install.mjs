@@ -25,6 +25,8 @@ const HOOKS = [
   { event: 'Notification', state: 'permission' },
   { event: 'PreCompact', state: 'compact' },
   { event: 'Stop', state: 'idle' },
+  { event: 'SubagentStart', state: 'crew_in' },
+  { event: 'SubagentStop', state: 'crew_out' },
 ];
 
 mkdirSync(dirname(settingsPath), { recursive: true });

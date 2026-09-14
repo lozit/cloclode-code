@@ -39,10 +39,13 @@ reste figé sur la première phrase sans jamais se dandiner.
 | `Notification` | `permission` |
 | `PreCompact` | `compact` |
 | `Stop` | `idle` |
+| `SubagentStart` | `crew_in` |
+| `SubagentStop` | `crew_out` |
 
-L'état porte deux compteurs, à deux cadences. `tick` avance à chaque événement et fait
+L'état porte trois compteurs, à trois cadences. `tick` avance à chaque événement et fait
 bouger les épaules. `turn` n'avance que sur `UserPromptSubmit` et choisit la phrase — une
-phrase par tour de conversation, le temps de la lire.
+phrase par tour de conversation, le temps de la lire. `crew` compte les sous-agents en
+cours d'exécution.
 
 Cloclo se dandine : à chaque événement, une épaule monte d'un pixel pendant que l'autre
 descend, puis elles échangent. Le mouvement est indexé sur l'activité et non sur l'horloge,
@@ -54,18 +57,33 @@ Au-delà de 60 % de fenêtre de contexte, Cloclo bronze : son visage fonce jusqu
 cuivré vers 85 %, puis vire au coup de soleil. À 100 %, il est cuit. Les cheveux, la veste
 et le col gardent leur couleur — c'est un bronzage, pas un incendie.
 
+## Les Claudettes
+
+Chaque sous-agent qui démarre monte sur scène sous la forme d'une danseuse, moitié moins
+large que Cloclo et sans yeux — à quatre colonnes, un visage ferait deux pixels de large,
+et le détail devient du bruit. La silhouette suffit.
+
+Elles se dandinent **en contre-temps** : quand Cloclo lève l'épaule gauche, elles lèvent
+la droite. Une ligne de code — `tick + 1` au lieu de `tick` — et deux animations
+indépendantes deviennent une chorégraphie.
+
+La troupe n'est que décoration, donc elle ne prend que la place que la réplique peut
+céder : le nombre de danseuses affichées s'ajuste à la largeur du terminal. Le compte
+exact, lui, apparaît toujours dans la ligne du bas — « 3 Claudettes ».
+
+Le compteur retombe à zéro sur `Stop`, en plus de décroître sur chaque `SubagentStop`.
+C'est délibéré : si un `SubagentStop` était manqué, le compte dériverait vers le haut pour
+de bon et Cloclo se traînerait un ballet fantôme jusqu'à la fin de la session.
+
 ## Architecture
 
 - `hooks/hooks.json` — branche chaque événement sur `scripts/hook.mjs`
 - `scripts/hook.mjs` — écrit `{state, at}` dans un fichier par session
 - `scripts/statusline.mjs` — lit cet état et rend la ligne (aucune dépendance, ~40 ms)
-- `scripts/sprite.mjs` — la mascotte, en demi-blocs Unicode et couleurs 24 bits ; un seul
-  sprite, dont seule la rangée d'épaules varie
+- `scripts/sprite.mjs` — la mascotte et les Claudettes, en demi-blocs Unicode et couleurs
+  24 bits ; deux grilles, dont seule la rangée d'épaules varie
 - `scripts/phrases.mjs` — le catalogue des répliques
 - `scripts/demo.mjs` — rend la ligne hors session, pour voir un changement tout de suite
-
-L'état stocke aussi un compteur `tick`, incrémenté à chaque événement. C'est lui qui fait
-avancer l'animation.
 
 L'état est stocké dans `$CLAUDE_PLUGIN_DATA` s'il existe, sinon dans le dossier temporaire
 du système. Comme la status line est événementielle, un état peut rester affiché
@@ -88,6 +106,7 @@ node scripts/demo.mjs tool_error   # un état
 node scripts/demo.mjs idle 92      # un état, à 92 % de fenêtre
 node scripts/demo.mjs --phrases   # toutes les phrases
 node scripts/demo.mjs --heat       # la chauffe, de 0 à 100 %
+node scripts/demo.mjs --claudettes # la troupe, de zéro à quatre
 node scripts/demo.mjs --sway      # six événements d'affilée, pour voir le dandinement
 ```
 

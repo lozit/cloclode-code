@@ -15,7 +15,7 @@ Cette exception vaut pour ce dépôt seulement.
 
 ## Invariants à ne pas casser
 
-Trois contraintes non évidentes, documentées en détail dans le `README.md` :
+Quatre contraintes non évidentes, documentées en détail dans le `README.md` :
 
 - **La colonne 0 du sprite doit rester opaque.** Claude Code rogne les blancs en tête de
   chaque ligne de status line ; un pixel transparent en colonne 0 décale toute la ligne.
@@ -23,6 +23,9 @@ Trois contraintes non évidentes, documentées en détail dans le `README.md` :
   repos. Toute animation s'indexe sur les compteurs de l'état, pas sur l'horloge.
 - **Les hooks ne sont pas optionnels.** Sans eux rien n'écrit l'état de session, et la
   mascotte est figée sur la première phrase, sans dandinement.
+- **Le compteur de Claudettes se remet à zéro sur `Stop`.** Ce n'est pas redondant avec
+  `SubagentStop` : c'est le filet qui empêche un compte manqué de dériver vers le haut
+  définitivement.
 
 ## Droits
 

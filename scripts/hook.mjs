@@ -1,7 +1,16 @@
-import { writeState, readStdinJson } from './state.mjs';
+import { writeState, bumpCrew, readStdinJson } from './state.mjs';
 
 const requested = process.argv[2] || 'thinking';
 const payload = await readStdinJson();
+
+// A subagent walking on or off stage adjusts the crew count without touching
+// the turn: a Claudette arriving is not the user speaking.
+const CREW = { crew_in: 1, crew_out: -1 };
+
+if (requested in CREW) {
+  bumpCrew(payload.session_id, CREW[requested]);
+  process.exit(0);
+}
 
 let state = requested;
 

@@ -7,6 +7,7 @@
 //   node scripts/demo.mjs --phrases      # every phrase, stacked
 //   node scripts/demo.mjs --heat         # the same state as the window fills up
 //   node scripts/demo.mjs --sway         # six consecutive events, to see the sway
+//   node scripts/demo.mjs --claudettes   # the troupe filling up, nought to four
 
 import { spawn } from 'node:child_process';
 import { mkdtempSync, writeFileSync } from 'node:fs';
@@ -20,10 +21,10 @@ const root = dirname(here);
 const dataDir = mkdtempSync(join(tmpdir(), 'cloclode-demo-'));
 const WINDOW = 200000;
 
-function render(state, percent, tick = 0, turn = 0) {
+function render(state, percent, tick = 0, turn = 0, crew = 0) {
   writeFileSync(
     join(dataDir, `state-${state}.json`),
-    JSON.stringify({ state, at: Date.now(), tick, turn }),
+    JSON.stringify({ state, at: Date.now(), tick, turn, crew }),
   );
 
   const payload = {
@@ -62,6 +63,12 @@ if (first === '--phrases') {
     await render('thinking', percent, 0, turn);
     process.stdout.write('\n');
   }
+} else if (first === '--claudettes') {
+  for (let crew = 0; crew <= 4; crew += 1) {
+    label(`${crew} sur scène`);
+    await render('tool', percent, crew, 3, crew);
+    process.stdout.write('\n');
+  }
 } else if (first === '--sway') {
   // One render per event, the way Claude Code drives it during a tool call.
   const beat = ['tool', 'tool_done'];
@@ -78,7 +85,9 @@ if (first === '--phrases') {
     process.stdout.write('\n');
   }
 } else if (first.startsWith('--')) {
-  process.stderr.write(`unknown flag "${first}" - try --phrases, --sway or --heat\n`);
+  process.stderr.write(
+    `unknown flag "${first}" - try --phrases, --sway, --heat or --claudettes\n`,
+  );
   process.exit(1);
 } else {
   await render(first, percent);
